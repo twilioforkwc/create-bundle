@@ -1,0 +1,17 @@
+{
+  "name": "bundle-create",
+  "version": "1.0.0",
+  "description": "",
+  "main": "createBundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "katsumi takahashi",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.5",
+    "twilio": "^3.39.1"
+  }
+}
