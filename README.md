@@ -17,7 +17,7 @@
 適当なフォルダに移動し、リポジトリを取得します。
 
 ```
-$ git clone https://github.com/mobilebiz/bundle-create.git
+$ git clone https://github.com/twilioforkwc/create-bundle.git
 $ cd bundle-create
 $ npm install
 $ mv .env.example .env
