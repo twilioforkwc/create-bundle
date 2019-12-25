@@ -35,7 +35,7 @@ describe(".env test", () => {
         chai.assert.notEqual(process.env.REGION.length, 0, 'REGIONが空です');
     });
     it("POSTAL_CODE", () => {
-        chai.assert.notEqual(process.env.POSTAL_CODE.length, 0, 'POSTAL_CODEが空です');
+        chai.assert.lengthOf(process.env.POSTAL_CODE, 7, 'POSTAL_CODEの長さが不正です');
     });
     it("ISO_COUNTRY", () => {
         chai.assert.lengthOf(process.env.ISO_COUNTRY, 2, 'ISO_COUNTRYの長さが不正です');

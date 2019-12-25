@@ -44,7 +44,10 @@ $ mv .env.example .env
 ## プログラムの実行
 
 ```
-$ node createBundle.js
+$ npm start
+
+...最初にテストコードが走って`.env`の内容をチェックします。
+...テストがすべてPASSすると申請が始まります。
 
 >>> AddressSid:ADf5bfb33ca656b88905c8e9827428f2ff created.
 >>> BundleSid:BUf7e15df42d83dfc5697f1adb1bcef793 created.
