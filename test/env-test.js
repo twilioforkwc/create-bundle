@@ -22,9 +22,6 @@ describe(".env test", () => {
     it("LAST_NAME", () => {
         chai.assert.notEqual(process.env.LAST_NAME.length, 0, 'LAST_NAMEが空です');
     });
-    it("IMAGE_FILE_NAME", () => {
-        chai.assert.isTrue(fs.existsSync(`./images/${process.env.IMAGE_FILE_NAME}`), '指定した画像ファイルがありません');
-    });
     it("STREET", () => {
         chai.assert.notEqual(process.env.STREET.length, 0, 'STREETが空です');
     });
@@ -39,5 +36,35 @@ describe(".env test", () => {
     });
     it("ISO_COUNTRY", () => {
         chai.assert.lengthOf(process.env.ISO_COUNTRY, 2, 'ISO_COUNTRYの長さが不正です');
+    });
+    it("BUSINESS_NAME", () => {
+        chai.assert.notEqual(process.env.BUSINESS_NAME.length, 0, 'BUSINESS_NAMEが空です');
+    });
+    it("BUSINESS_DESCRIPTION", () => {
+        chai.assert.notEqual(process.env.BUSINESS_DESCRIPTION.length, 0, 'BUSINESS_DESCRIPTIONが空です');
+    });
+    it("BUSINESS_ADDRESS", () => {
+        chai.assert.notEqual(process.env.BUSINESS_ADDRESS.length, 0, 'BUSINESS_ADDRESSが空です');
+    });
+    it("BUSINESS_CITY", () => {
+        chai.assert.notEqual(process.env.BUSINESS_CITY.length, 0, 'BUSINESS_CITYが空です');
+    });
+    it("BUSINESS_REGION", () => {
+        chai.assert.notEqual(process.env.BUSINESS_REGION.length, 0, 'BUSINESS_REGIONが空です');
+    });
+    it("BUSINESS_POSTAL_CODE", () => {
+        chai.assert.lengthOf(process.env.BUSINESS_POSTAL_CODE, 7, 'BUSINESS_POSTAL_CODEの長さが不正です');
+    });
+    it("BUSINESS_ISO_COUNTRY", () => {
+        chai.assert.lengthOf(process.env.BUSINESS_ISO_COUNTRY, 2, 'BUSINESS_ISO_COUNTRYの長さが不正です');
+    });
+    it("CORPORATE_REGISTRY_FILE", () => {
+        chai.assert.isTrue(fs.existsSync(`./images/${process.env.CORPORATE_REGISTRY_FILE}`), '指定した登記簿謄本のファイルがありません');
+    });
+    // it("POWER_OF_ATTORNEY_FILE", () => {
+    //     chai.assert.isTrue(fs.existsSync(`./images/${process.env.POWER_OF_ATTORNEY_FILE}`), '指定した委任状のファイルがありません');
+    // });
+    it("DRIVERS_LICENSE_FILE", () => {
+        chai.assert.isTrue(fs.existsSync(`./images/${process.env.DRIVERS_LICENSE_FILE}`), '指定した免許証ファイルがありません');
     });
 });
