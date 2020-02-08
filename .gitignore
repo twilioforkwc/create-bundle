@@ -62,7 +62,7 @@ typings/
 .env.KWC
 
 # images
-images/KWC_DrivingLicense.jpg
+images/KWC_DriversLicense.jpg
 images/KWC_CorporateRegistry.pdf
 images/KWC_PowerOfAttorney.pdf
 images/GIJ_DrivingLicense.jpg
