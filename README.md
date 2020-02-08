@@ -6,13 +6,13 @@
 
 ## パターン１　代表者が申請作業を行うケース
 
-会社の登記簿謄本に名前が記載されている方が申請を行うケースです。
+会社の登記簿謄本に**名前が記載されている**方が申請を行うケースです。
 謄本に加えて、この方の身分証明書が必要です。
 
 ## パターン２　担当者が申請作業を行うケース
 
-会社の登記簿謄本に名前が記載されていない方が申請を行うケースです。
-謄本に加えて、申請者の身分証明書と会社が発行した委任状が必要です。
+会社の登記簿謄本に**名前が記載されていない**方が申請を行うケースです。
+謄本に加えて、申請者の身分証明書と会社が発行した**委任状が必要**です。
 
 委任状については、[こちら](https://skillful-pancake-7200.twil.io/assets/PowerOfAttorneyTemplate.docx)にひな形を用意してあるので、別途ダウンロードして記載してください。
 記載の際の注意点は、以下のとおりです。
@@ -34,10 +34,10 @@
 
 ## インストール
 
-適当なフォルダに移動し、リポジトリを取得します。
+適当なフォルダに移動し、GitHubリポジトリを取得します（法人用のブランチを利用します）。
 
 ```
-$ git clone https://github.com/twilioforkwc/create-bundle.git
+$ git clone -b create-bundle-business https://github.com/twilioforkwc/create-bundle.git
 $ cd bundle-create
 $ npm install
 $ mv .env.example .env
@@ -50,7 +50,7 @@ $ mv .env.example .env
 |:--|:--|
 |ACCOUNT_SID|TwilioアカウントのAccountSid（ACから始まる文字列）|
 |AUTH_TOKEN|AccountSidに対応するAuthToken|
-|BUSINESS_NAME|登記簿謄本に記載されいている商号を記載通りに|
+|BUSINESS_NAME|登記簿謄本に記載されいている商号を記載通りに（社名に「・」が入っている場合は、APIがエラーを出すので削除してください）|
 |BUSINESS_DESCRIPTION|登記簿謄本に記載されいている会社法人等番号を記載通りに|
 |BUSINESS_ADDRESS|登記簿謄本に記載されている本店住所の町村名と丁目番地を記載されている通りに（例：大手町一丁目１番地１号）|
 |BUSINESS_CITY|登記簿謄本に記載されている本店住所の市区名を記載されている通りに（例：千代田区）|
@@ -78,14 +78,20 @@ $ npm start
 ...最初にテストコードが走って`.env`の内容をチェックします。
 ...テストがすべてPASSすると申請が始まります。
 
->>> AddressSid:ADf5bfb33ca656b88905c8e9827428f2ff created.
->>> BundleSid:BUf7e15df42d83dfc5697f1adb1bcef793 created.
->>> UserSid:IT9111cd08fbd6c31ae2914dd811327b09 created.
->>> DocumentSid:RDadd732e4cbb99d0034f7dea093f48df9 created.
->>> Assign completed.
+>>> AddressSid:ADaf7ab6216031b81e4ecce80aa3111a56 created.
+>>> BundleSid:BUefb9be077dfbcca5310ecd8a431d7a09 created.
+>>> UserSid:ITff4c56fed982f24322245263db52464a created.
+>>> CorporateRegistrySid:RDe948ef6f563611e18c2390845d28cfd9 created.
+>>> PowerOfAttorneySid:RDd5aabe1a69d6a7edcc8c1a976537d3ff created.
+>>> DriverLicenseSid:RD0e0696679d5fdbb902cc02ff6bcf561c created.
+>>> Corporate Registry Assign completed.
+>>> Power of Attorney Assign completed.
+>>> Driver's License Assign completed.
+>>> End User Assign completed.
 >>> Submitted.
 ```
 
 上記のように`Submitted.`が表示されれば成功です。  
 管理コンソールにログインし、電話番号 > Regulatory Complience > Bundlesを確認し、STATUSが`Pending Review`になっていることを確認しましょう。
-
+あとは審査を待つだけです。
+しばらくすると（３営業日以内）に、Twilioからメールが届きますので、審査が通れば上記STATUSが`Twilio Approved`になります。

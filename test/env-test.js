@@ -61,9 +61,11 @@ describe(".env test", () => {
     it("CORPORATE_REGISTRY_FILE", () => {
         chai.assert.isTrue(fs.existsSync(`./images/${process.env.CORPORATE_REGISTRY_FILE}`), '指定した登記簿謄本のファイルがありません');
     });
-    // it("POWER_OF_ATTORNEY_FILE", () => {
-    //     chai.assert.isTrue(fs.existsSync(`./images/${process.env.POWER_OF_ATTORNEY_FILE}`), '指定した委任状のファイルがありません');
-    // });
+    if (process.env.POWER_OF_ATTORNEY_FILE.length > 0) {
+        it("POWER_OF_ATTORNEY_FILE", () => {
+            chai.assert.isTrue(fs.existsSync(`./images/${process.env.POWER_OF_ATTORNEY_FILE}`), '指定した委任状のファイルがありません');
+        });
+    }
     it("DRIVERS_LICENSE_FILE", () => {
         chai.assert.isTrue(fs.existsSync(`./images/${process.env.DRIVERS_LICENSE_FILE}`), '指定した免許証ファイルがありません');
     });
