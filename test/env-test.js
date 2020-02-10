@@ -19,7 +19,6 @@ describe(".env test", () => {
         })
         .catch(err => {
             throw (`API Call failed. ${err}`);
-            // throw new Error(`API Call failed. ${err}`);
         });
     });
     it("EMAIL", () => {

@@ -28,12 +28,13 @@ const now = new Date();
 
 let bundleSid = null;   // BUxxxxxx
 let addressSid = null;  // ADxxxxxx
+let businessAddressSid = null;  // ADxxxxxx
 let userSid = null;     // ITxxxxxx
 let corporateRegistrySid = null; // RDxxxxxx
 let powerOfAttorneySid = null; // RDxxxxxx
 let driversLicenseSid = null; // RDxxxxxx
 
-// 住所の作成
+// 法人の住所の作成
 const twilioClient = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
 twilioClient.addresses.create({
     customerName: `${BUSINESS_NAME}`,
@@ -43,6 +44,21 @@ twilioClient.addresses.create({
     region: BUSINESS_REGION,
     postalCode: BUSINESS_POSTAL_CODE,
     isoCountry: BUSINESS_ISO_COUNTRY,
+})
+.then(body => {
+    businessAddressSid = body.sid;
+    console.log(`>>> BusinessAddressSid:${businessAddressSid} created.`);
+
+    // 個人の住所を作成
+    return twilioClient.addresses.create({
+        customerName: `${LAST_NAME} ${FIRST_NAME}`,
+        friendlyName: `${LAST_NAME} ${FIRST_NAME}`,
+        street: STREET,
+        city: CITY,
+        region: REGION,
+        postalCode: POSTAL_CODE,
+        isoCountry: ISO_COUNTRY,
+    });
 })
 .then(body => {
     addressSid = body.sid;
@@ -105,7 +121,7 @@ twilioClient.addresses.create({
         Type: 'corporate_registry',
         MimeType: 'application/pdf',
         Attributes: JSON.stringify({
-            address_sids: [ addressSid ],
+            address_sids: [ businessAddressSid ],
             first_name: FIRST_NAME,
             last_name: LAST_NAME,
             business_name: BUSINESS_NAME,
@@ -141,7 +157,7 @@ twilioClient.addresses.create({
             Type: 'power_of_attorney',
             MimeType: 'application/pdf',
             Attributes: JSON.stringify({
-                address_sids: [ addressSid ],
+                address_sids: [ businessAddressSid, addressSid ],
                 first_name: FIRST_NAME,
                 last_name: LAST_NAME,
             }),
