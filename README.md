@@ -50,6 +50,7 @@ $ mv .env.example .env
 |:--|:--|
 |ACCOUNT_SID|TwilioアカウントのAccountSid（ACから始まる文字列）|
 |AUTH_TOKEN|AccountSidに対応するAuthToken|
+|NUMBER_TYPE|nationalもしくはtoll-freeを指定|
 |BUSINESS_NAME|登記簿謄本に記載されいている商号を記載通りに（社名に「・」が入っている場合は、APIがエラーを出すので削除してください）|
 |BUSINESS_DESCRIPTION|登記簿謄本に記載されいている会社法人等番号を記載通りに|
 |BUSINESS_ADDRESS|登記簿謄本に記載されている本店住所の町村名と丁目番地を記載されている通りに（例：大手町一丁目１番地１号）|

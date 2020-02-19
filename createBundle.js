@@ -4,6 +4,7 @@ const fs = require('fs');
 
 const ACCOUNT_SID = process.env.ACCOUNT_SID;
 const AUTH_TOKEN = process.env.AUTH_TOKEN;
+const NUMBER_TYPE = process.env.NUMBER_TYPE;
 const BUSINESS_NAME = process.env.BUSINESS_NAME;
 const BUSINESS_DESCRIPTION = process.env.BUSINESS_DESCRIPTION;
 const BUSINESS_ADDRESS = process.env.BUSINESS_ADDRESS;
@@ -75,7 +76,7 @@ twilioClient.addresses.create({
         form: {
             EndUserType: 'business',
             IsoCountry: 'jp',
-            NumberType: 'national',
+            NumberType: NUMBER_TYPE,
             FriendlyName: `Business Address Regist at ${now}`,
             Email: EMAIL,
         },

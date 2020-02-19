@@ -21,6 +21,9 @@ describe(".env test", () => {
             throw (`API Call failed. ${err}`);
         });
     });
+    it("NUMBER_TYPE", () => {
+        assert.match(process.env.NUMBER_TYPE, /national|toll-free/, 'NUMBER_TYPEは national もしくは toll-free のいずれかで指定してください')
+    });
     it("EMAIL", () => {
         assert.match(process.env.EMAIL, /.+@.+/, 'EMAILの形式が不正です');
     });
