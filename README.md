@@ -1,6 +1,8 @@
-# BundleSid登録プログラム（法人編）
+# BundleSid登録プログラム（法人編）アカウントクロール対応
 
 このプログラムは、Twilio（KWCアカウント）におけるBundleSidの登録を自動化するものです。
+マスターアカウントのAccoutSid、AuthTokenを設定していただければ、保有しているサブアカウント（マスターを含む）を自動的にクロールして、Bundlesがないすべてのサブアカウントに登録します。
+すでにApprovedされているBundlesがあるサブアカウントには登録をしません。
 
 法人でのBundleSidの登録には、パターンが２種類あります。
 
@@ -37,7 +39,7 @@
 適当なフォルダに移動し、GitHubリポジトリを取得します（法人用のブランチを利用します）。
 
 ```
-$ git clone -b create-bundle-business https://github.com/twilioforkwc/create-bundle.git
+$ git clone -b create-bundle-business-subaccounts https://github.com/twilioforkwc/create-bundle.git
 $ cd bundle-create
 $ npm install
 $ mv .env.example .env
@@ -48,7 +50,7 @@ $ mv .env.example .env
 
 |項目名|内容|
 |:--|:--|
-|ACCOUNT_SID|TwilioアカウントのAccountSid（ACから始まる文字列）|
+|ACCOUNT_SID|TwilioアカウントのマスターアカウントのAccountSid（ACから始まる文字列）|
 |AUTH_TOKEN|AccountSidに対応するAuthToken|
 |NUMBER_TYPE|nationalもしくはtoll-freeを指定|
 |BUSINESS_NAME|登記簿謄本に記載されいている商号を記載通りに（社名に「・」が入っている場合は、APIがエラーを出すので削除してください）|
