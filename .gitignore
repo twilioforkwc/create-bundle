@@ -60,6 +60,7 @@ typings/
 .env
 .env.GIJ
 .env.KWC
+.env.handson
 
 # images
 images/KWC_DriversLicense.jpg
