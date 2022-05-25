@@ -63,9 +63,8 @@ typings/
 .env.handson
 
 # images
-images/KWC_DriversLicense.jpg
-images/KWC_CorporateRegistry.pdf
-images/KWC_PowerOfAttorney.pdf
-images/GIJ_DrivingLicense.jpg
-images/GIJ_CorporateRegistry.pdf
+images/KWC_*.jpg
+images/KWC_*.pdf
+images/GIJ_*.jpg
+images/GIJ_*.pdf
 

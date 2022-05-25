@@ -1,6 +1,6 @@
-require("dotenv").config();
-const rq = require("request-promise");
-const fs = require("fs");
+require('dotenv').config();
+const rq = require('request-promise');
+const fs = require('fs');
 
 const ACCOUNT_SID = process.env.ACCOUNT_SID;
 const AUTH_TOKEN = process.env.AUTH_TOKEN;
@@ -13,7 +13,7 @@ const BUSINESS_REGION = process.env.BUSINESS_REGION;
 const BUSINESS_POSTAL_CODE = process.env.BUSINESS_POSTAL_CODE;
 const BUSINESS_ISO_COUNTRY = process.env.BUSINESS_ISO_COUNTRY;
 const CORPORATE_REGISTRY_FILE = process.env.CORPORATE_REGISTRY_FILE;
-const POWER_OF_ATTORNEY_FILE = process.env.POWER_OF_ATTORNEY_FILE || "";
+const POWER_OF_ATTORNEY_FILE = process.env.POWER_OF_ATTORNEY_FILE || '';
 const FIRST_NAME = process.env.FIRST_NAME;
 const LAST_NAME = process.env.LAST_NAME;
 const BIRTH_DATE = process.env.BIRTH_DATE;
@@ -27,14 +27,14 @@ const EMAIL = process.env.EMAIL;
 
 const now = new Date();
 
-const client = require("twilio")(ACCOUNT_SID, AUTH_TOKEN);
+const client = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
 
 // サブアカウントをクロール
 client.api.accounts
   .list({ limit: 100 })
   .then(async (accounts) => {
-    for (account of accounts) {
-      await execSubAccount(account);
+    for (let account of accounts) {
+      if (account.status === 'active') await execSubAccount(account);
     }
   })
   .catch((err) => {
@@ -43,7 +43,7 @@ client.api.accounts
 
 const execSubAccount = async (account) => {
   console.log(`${account.friendlyName} [${account.sid}]==============`);
-  const twilioClient = require("twilio")(account.sid, account.authToken);
+  const twilioClient = require('twilio')(account.sid, account.authToken);
 
   // すでに登録済みのBundlesを確認
   await twilioClient.numbers.regulatoryCompliance.bundles
@@ -52,16 +52,16 @@ const execSubAccount = async (account) => {
       let fNoBundles = true;
       bundles.forEach((bundle) => {
         console.log(`${bundle.sid} => ${bundle.status}`);
-        if (bundle.status === "twilio-approved") fNoBundles = false;
+        if (bundle.status === 'twilio-approved') fNoBundles = false;
       });
-      if (fNoBundles) await addBundles(twilioClient);
+      if (fNoBundles) await addBundles(twilioClient, account);
     })
     .catch((err) => {
       console.error(`*** ERROR ***\n${err}`);
     });
 };
 
-const addBundles = async (twilioClient) => {
+const addBundles = async (twilioClient, account) => {
   let bundleSid = null; // BUxxxxxx
   let addressSid = null; // ADxxxxxx
   let businessAddressSid = null; // ADxxxxxx
@@ -69,6 +69,7 @@ const addBundles = async (twilioClient) => {
   let corporateRegistrySid = null; // RDxxxxxx
   let powerOfAttorneySid = null; // RDxxxxxx
   let driversLicenseSid = null; // RDxxxxxx
+  let declarationOfBeneficialOwnershipSid = null; // RDxxxxxx
   let itemAssignment = null; // BVxxxxxxx
   let formData, options, body;
 
@@ -102,9 +103,9 @@ const addBundles = async (twilioClient) => {
     // Create new Bundle
     const bundle =
       await twilioClient.numbers.regulatoryCompliance.bundles.create({
-        endUserType: "business",
+        endUserType: 'business',
         isoCountry: ISO_COUNTRY,
-        numberType: "national",
+        numberType: NUMBER_TYPE,
         friendlyName: BUSINESS_NAME,
         email: EMAIL,
       });
@@ -122,15 +123,15 @@ const addBundles = async (twilioClient) => {
           last_name: LAST_NAME,
         },
         friendlyName: `Business End User at ${now}`,
-        type: "business",
+        type: 'business',
       });
     console.log(`🐞 End-User created. ${endUser.sid}`);
     userSid = endUser.sid;
 
     // Create a Supporting Document with file upload（Corporate Registry）
     formData = {
-      Type: "corporate_registry",
-      MimeType: "application/pdf",
+      Type: 'corporate_registry',
+      MimeType: 'application/pdf',
       Attributes: JSON.stringify({
         address_sids: [businessAddressSid],
         first_name: FIRST_NAME,
@@ -142,8 +143,8 @@ const addBundles = async (twilioClient) => {
       File: fs.createReadStream(`./images/${CORPORATE_REGISTRY_FILE}`),
     };
     options = {
-      url: "https://numbers-upload.twilio.com/v2/RegulatoryCompliance/SupportingDocuments",
-      method: "POST",
+      url: 'https://numbers-upload.twilio.com/v2/RegulatoryCompliance/SupportingDocuments',
+      method: 'POST',
       auth: {
         user: account.sid,
         password: account.authToken,
@@ -153,14 +154,14 @@ const addBundles = async (twilioClient) => {
     body = await rq(options);
     corporateRegistrySid = JSON.parse(body).sid;
     console.log(
-      `🐞 Corporate Registry Document uploaded. ${corporateRegistrySid}`
+      `🐞 Corporate Registry Document uploaded. ${corporateRegistrySid}`,
     );
 
     // Create a Supporting Document with file upload (Power of Attorney)
     if (POWER_OF_ATTORNEY_FILE.length !== 0) {
       formData = {
-        Type: "power_of_attorney",
-        MimeType: "application/pdf",
+        Type: 'power_of_attorney',
+        MimeType: 'application/pdf',
         Attributes: JSON.stringify({
           address_sids: [businessAddressSid, addressSid],
           first_name: FIRST_NAME,
@@ -170,8 +171,8 @@ const addBundles = async (twilioClient) => {
         File: fs.createReadStream(`./images/${POWER_OF_ATTORNEY_FILE}`),
       };
       options = {
-        url: "https://numbers-upload.twilio.com/v2/RegulatoryCompliance/SupportingDocuments",
-        method: "POST",
+        url: 'https://numbers-upload.twilio.com/v2/RegulatoryCompliance/SupportingDocuments',
+        method: 'POST',
         auth: {
           user: account.sid,
           password: account.authToken,
@@ -181,14 +182,41 @@ const addBundles = async (twilioClient) => {
       body = await rq(options);
       powerOfAttorneySid = JSON.parse(body).sid;
       console.log(
-        `🐞 Power of Attorney Document uploaded. ${powerOfAttorneySid}`
+        `🐞 Power of Attorney Document uploaded. ${powerOfAttorneySid}`,
       );
     }
 
+    // Create a Supporting Document with file upload ("Completed Japan Regulatory Bundle Application")
+    formData = {
+      Type: 'declaration_of_beneficial_ownership',
+      MimeType: 'image/jpeg',
+      Attributes: JSON.stringify({
+        first_name: FIRST_NAME,
+        last_name: LAST_NAME,
+        business_name: BUSINESS_NAME,
+      }),
+      FriendlyName: `Completed Japan Regulatory Bundle Application at ${now}`,
+      File: fs.createReadStream(`./images/${CORPORATE_REGISTRY_FILE}`),
+    };
+    options = {
+      url: 'https://numbers-upload.twilio.com/v2/RegulatoryCompliance/SupportingDocuments',
+      method: 'POST',
+      auth: {
+        user: account.sid,
+        password: account.authToken,
+      },
+      formData: formData,
+    };
+    body = await rq(options);
+    declarationOfBeneficialOwnershipSid = JSON.parse(body).sid;
+    console.log(
+      `🐞 Completed Japan Regulatory Bundle Application Document uploaded. ${declarationOfBeneficialOwnershipSid}`,
+    );
+
     // Create a Supporting Document with file upload (Driving License)
     formData = {
-      Type: "drivers_license",
-      MimeType: "image/jpeg",
+      Type: 'drivers_license',
+      MimeType: 'image/jpeg',
       Attributes: JSON.stringify({
         address_sids: [addressSid],
         birth_date: BIRTH_DATE,
@@ -199,8 +227,8 @@ const addBundles = async (twilioClient) => {
       File: fs.createReadStream(`./images/${DRIVERS_LICENSE_FILE}`),
     };
     options = {
-      url: "https://numbers-upload.twilio.com/v2/RegulatoryCompliance/SupportingDocuments",
-      method: "POST",
+      url: 'https://numbers-upload.twilio.com/v2/RegulatoryCompliance/SupportingDocuments',
+      method: 'POST',
       auth: {
         user: account.sid,
         password: account.authToken,
@@ -217,7 +245,7 @@ const addBundles = async (twilioClient) => {
       .itemAssignments.create({
         objectSid: userSid,
       });
-    console.log(`🐞 Item assigned. ${itemAssignment.sid}`);
+    console.log(`🐞 End-User assigned. ${itemAssignment.sid}`);
 
     // Assign corporate document to a Regulatory Bundle
     itemAssignment = await twilioClient.numbers.regulatoryCompliance
@@ -225,7 +253,9 @@ const addBundles = async (twilioClient) => {
       .itemAssignments.create({
         objectSid: corporateRegistrySid,
       });
-    console.log(`🐞 Item assigned. ${itemAssignment.sid}`);
+    console.log(
+      `🐞 Corporate Registry Document assigned. ${itemAssignment.sid}`,
+    );
 
     // Assign power of Attorney document to Regulatory Bundle
     if (POWER_OF_ATTORNEY_FILE.length !== 0) {
@@ -234,8 +264,20 @@ const addBundles = async (twilioClient) => {
         .itemAssignments.create({
           objectSid: powerOfAttorneySid,
         });
-      console.log(`🐞 Item assigned. ${itemAssignment.sid}`);
+      console.log(
+        `🐞 Power Of Attorney Document assigned. ${itemAssignment.sid}`,
+      );
     }
+
+    // Assign corporate document to a Regulatory Bundle
+    itemAssignment = await twilioClient.numbers.regulatoryCompliance
+      .bundles(bundleSid)
+      .itemAssignments.create({
+        objectSid: declarationOfBeneficialOwnershipSid,
+      });
+    console.log(
+      `🐞 Completed Japan Regulatory Bundle Application Document assigned. ${itemAssignment.sid}`,
+    );
 
     // Assign user document to a Regulatory Bundle
     itemAssignment = await twilioClient.numbers.regulatoryCompliance
@@ -243,16 +285,30 @@ const addBundles = async (twilioClient) => {
       .itemAssignments.create({
         objectSid: driversLicenseSid,
       });
-    console.log(`🐞 Item assigned. ${itemAssignment.sid}`);
+    console.log(`🐞 Drivers License Document assigned. ${itemAssignment.sid}`);
 
     // Request a Regulatory Bundle
-    const bundleRequest = await twilioClient.numbers.regulatoryCompliance
-      .bundles(bundleSid)
-      .update({
-        friendlyName: `Request at ${now}`,
-        status: "pending-review",
-      });
-    console.log(`🐞 Bundle requested. ${bundleRequest.sid}`);
+    options = {
+      url: `https://numbers.twilio.com/v2/RegulatoryCompliance/Bundles/${bundleSid}`,
+      method: 'POST',
+      auth: {
+        user: account.sid,
+        password: account.authToken,
+      },
+      form: {
+        Status: 'pending-review',
+      },
+    };
+    await rq(options);
+
+    // const bundleRequest = await twilioClient.numbers.regulatoryCompliance
+    //   .bundles(bundleSid)
+    //   .update({
+    //     friendlyName: `Request at ${now}`,
+    //     status: 'pending-review',
+    //   });
+    console.log(`🐞 Bundle requested.`);
+    console.log(`AccountSid: ${account.sid} BundleSid: ${bundleSid}`);
   } catch (err) {
     console.error(`👺 ERROR: ${err}`);
   }
