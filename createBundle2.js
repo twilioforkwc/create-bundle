@@ -25,6 +25,14 @@ const ISO_COUNTRY = process.env.ISO_COUNTRY;
 const DRIVERS_LICENSE_FILE = process.env.DRIVERS_LICENSE_FILE;
 const EMAIL = process.env.EMAIL;
 
+let requestMessage = `
+お疲れさまです。
+今週末から始まるNRIハッカソンで貸し出すアカウントのBundles承認をお願いできますでしょうか。
+すべて ACe0d962962c96c5a65982d5feb735859e（twiliohandson@kddi-web.com）のサブドメインとなります。
+例の通り、数が多くてすみません。
+
+`;
+
 const now = new Date();
 
 const client = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
@@ -36,6 +44,7 @@ client.api.accounts
     for (let account of accounts) {
       if (account.status === 'active') await execSubAccount(account);
     }
+    console.log(requestMessage);
   })
   .catch((err) => {
     console.error(`*** ERROR ***\n${err}`);
@@ -309,6 +318,11 @@ const addBundles = async (twilioClient, account) => {
     //   });
     console.log(`🐞 Bundle requested.`);
     console.log(`AccountSid: ${account.sid} BundleSid: ${bundleSid}`);
+    requestMessage += `
+${account.sid}
+${bundleSid}
+
+    `;
   } catch (err) {
     console.error(`👺 ERROR: ${err}`);
   }
