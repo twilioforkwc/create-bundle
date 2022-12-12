@@ -47,9 +47,9 @@ const createSubAccount = async (num) => {
 
 const Proc = () => {
   readline.question(
-    'いくつサブアカウントを作成しますか？（最大26まで） ',
+    'いくつサブアカウントを作成しますか？（最大30まで） ',
     async (answer) => {
-      if (isNaN(answer) || answer > 26) {
+      if (isNaN(answer) || answer > 30) {
         Proc();
       } else {
         console.log(`🐞 サブアカウントを${answer}個作成します。`);
