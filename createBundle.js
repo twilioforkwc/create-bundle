@@ -75,10 +75,7 @@ const execSubAccount = async (account) => {
       let fNoBundles = true;
       bundles.forEach((bundle) => {
         console.log(`${bundle.sid} => ${bundle.status}`);
-        if (
-          bundle.status === "twilio-approved" &&
-          bundle.dateCreated >= "2023-05-01T09:00:00.000Z"
-        )
+        if (bundle.status === "twilio-approved" && bundle.validUntil === null)
           fNoBundles = false;
       });
       if (fNoBundles) await addBundles(twilioClient, account);
