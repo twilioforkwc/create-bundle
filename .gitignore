@@ -58,7 +58,9 @@ typings/
 
 # dotenv environment variables file
 .env
+.env.*
+!.env.example
 
 # images
-images/DrivingLicense.jpg
-
+images/*.jpg
+images/*.pdf
