@@ -1,50 +1,39 @@
-# BundleSid 登録プログラム（法人編）アカウントクロール対応
+# Bundle 登録プログラム サプアカウント対応
 
-このプログラムは、Twilio（KWC アカウント）における BundleSid の登録を自動化するものです。
-マスターアカウントの AccoutSid、AuthToken を設定していただければ、保有しているサブアカウント（マスターを含む）を自動的にクロールして、Bundles がないすべてのサブアカウントに登録します。
-すでに Approved されている Bundles があるサブアカウントには登録をしません。
+このプログラムは、Twilio Japan に対して、Bundle の登録を自動化するものです。  
+マスターアカウントの AccountSid、AuthToken を設定していただければ、保有しているサブアカウント（マスターを含む）を自動的にクロールして、Bundles がないすべてのサブアカウントに登録します。  
+**[注意]**  
+すでに承認されている Bundles があるサブアカウントには登録をしません。
 
-法人での BundleSid の登録には、パターンが２種類あります。
-
-## パターン１　代表者が申請作業を行うケース
-
-会社の登記簿謄本に**名前が記載されている**方が申請を行うケースです。
-謄本に加えて、この方の身分証明書が必要です。
-
-## パターン２　担当者が申請作業を行うケース
-
-会社の登記簿謄本に**名前が記載されていない**方が申請を行うケースです。
-謄本に加えて、申請者の身分証明書と会社が発行した**委任状が必要**です。
-
-委任状については、[こちら](https://skillful-pancake-7200.twil.io/assets/PowerOfAttorneyTemplate.docx)にひな形を用意してあるので、別途ダウンロードして記載してください。
-記載の際の注意点は、以下のとおりです。
-![委任状説明.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/86046/7ae544d1-6dd7-8158-47b3-a753e3549b28.png)
+## 前提条件
 
 本プログラム以下の条件でのみ動作します。
 
 - 法人での申請
-- 会社証明書類として登記簿謄本（全部事項証明書）を用意してあること
-- 謄本に記載のない担当者が申請をする場合には、委任状を用意すること
-- 申請者の運転免許証を用意してあること
-- Node.js（バージョン 8 以降）がインストールされていること
+- 必要な書類を用意してあること
+- Node.js がインストールされていること
+
+必要書類については、[こちらの記事](https://qiita.com/mobilebiz/items/83eba66e7ed9ca339501)を確認してください。個人の証明書には、運転免許証とマイナンバーカードの組み合わせにのみ対応しています（パスポートは非対応）。  
+なお、本プログラムはリセラー事業者にも対応しています。
 
 ## 準備
 
-- 謄本ならびに委任状（必要な場合のみ）を**PDF 形式**で準備してください。複数枚に渡る場合は、5MB 以内であれば１つのファイルにまとめても大丈夫です。
-- 申請者の運転免許証のコピーを**JPEG 形式**で準備してください（サイズは 5MB 以内）。 スマホのカメラで撮影したものでも大丈夫ですが、免許証のみが写るように周りの画像は削除してください。
+- Bundle 申請書を**PDF 形式**で準備してください。リセラーとして申請する場合は、申請書の最後に TNUP をマージしておいてください。TNUP については、[こちらの記事](https://qiita.com/mobilebiz/items/c63e9ca4f102bc46cf25)を参考にしてください。
+- 謄本ならびに委任状（必要な場合のみ）を**PDF 形式**で準備してください（サイズは 5MB 以内）。謄本は発行日から 6 ヶ月以内のものに限ります。
+- 申請者の運転免許証のコピー、ならびにマイナンバーカード（表面のみ）のコピーを**JPEG 形式**で準備してください（サイズは 5MB 以内）。 スマホのカメラで撮影したものでも大丈夫ですが、免許証やマイナンバーカードのみが写るように周りの画像は削除してください。
 
 ## インストール
 
-適当なフォルダに移動し、GitHub リポジトリを取得します（法人用のブランチを利用します）。
+適当なフォルダに移動し、GitHub リポジトリを取得します。
 
-```
-$ git clone -b create-bundle-business-subaccounts https://github.com/twilioforkwc/create-bundle.git
-$ cd bundle-create
-$ npm install
-$ mv .env.example .env
+```sh
+git clone https://github.com/twilioforkwc/create-bundle.git
+cd bundle-create
+npm install
+mv .env.example .env
 ```
 
-謄本、委任状、運転免許証の各ファイルを、images フォルダにコピーしておきます。  
+Bundle 申請書、謄本、委任状（必要な場合）、運転免許証、マイナンバーカードの各ファイルを、images フォルダにコピーしておきます。  
 `.env`ファイルをエディタで開き、以下の項目をすべて申請者の内容に置き換えます。
 
 | 項目名                   | 内容                                                                                                                   |
@@ -52,6 +41,7 @@ $ mv .env.example .env
 | ACCOUNT_SID              | Twilio アカウントのマスターアカウントの AccountSid（AC から始まる文字列）                                              |
 | AUTH_TOKEN               | AccountSid に対応する AuthToken                                                                                        |
 | NUMBER_TYPE              | national もしくは toll-free を指定                                                                                     |
+| RESELLER                 | リセラーとして申請をだすには、true、通常の申請は false のまま                                                          |
 | BUSINESS_NAME            | 登記簿謄本に記載されいている商号を記載通りに（社名に「・」が入っている場合は、API がエラーを出すので削除してください） |
 | BUSINESS_DESCRIPTION     | 登記簿謄本に記載されいている事業内容の該当する部分を記載通りに                                                         |
 | BUSINESS_ADDRESS         | 登記簿謄本に記載されている本店住所の町村名と丁目番地を記載されている通りに（例：大手町一丁目１番地１号）               |
@@ -59,6 +49,7 @@ $ mv .env.example .env
 | BUSINESS_REGION          | 登記簿謄本に記載されている都道府県名を記載されている通りに（例：東京都）                                               |
 | BUSINESS_POSTAL_CODE     | 会社の郵便番号をハイフンなしで（例：1000001）                                                                          |
 | BUSINESS_ISO_COUNTRY     | 会社の住所が日本の場合は JP のままで                                                                                   |
+| BUNDLE_APPLICATION_FILE  | Bundle 申請書の PDF ファイル（リセラーの場合は、最後に TNUP をマージすることを忘れずに）                               |
 | CORPORATE＿REGISTRY_FILE | 登記簿謄本の PDF ファイル名                                                                                            |
 | POWER_OF_ATTORNEY_FILE   | 委任状の PDF ファイル名（なしの場合は未指定）                                                                          |
 | FIRST_NAME               | 申請者の名前（名）を免許証に記載されている通りに（日本語 OK）                                                          |
@@ -69,13 +60,14 @@ $ mv .env.example .env
 | REGION                   | 住所（都道府県）を免許証に記載されている通りに                                                                         |
 | POSTAL_CODE              | 郵便番号をハイフンなしで                                                                                               |
 | ISO_COUNTRY              | 日本の場合は JP のままで                                                                                               |
-| DRIVERS_LICENSE_FILE     | 免許証の画像ファイル名                                                                                                 |
+| DRIVERS_LICENSE_FILE     | 免許証の画像ファイル名（拡張子は.jpg）                                                                                 |
+| MYNUMBER_CARD_FILE       | マイナンバーカードの画像ファイル名（拡張子は.jpg）                                                                     |
 | EMAIL                    | 申請者のメールアドレス（審査結果が通知されます）                                                                       |
 
 ## プログラムの実行
 
-```
-$ npm start
+```sh
+npm start
 
 ...最初にテストコードが走って`.env`の内容をチェックします。
 ...テストがすべてPASSすると申請が始まります。
@@ -95,5 +87,6 @@ $ npm start
 
 上記のように`Submitted.`が表示されれば成功です。  
 管理コンソールにログインし、電話番号 > Regulatory Complience > Bundles を確認し、STATUS が`Pending Review`になっていることを確認しましょう。
-あとは審査を待つだけです。
-しばらくすると（３営業日以内）に、Twilio からメールが届きますので、審査が通れば上記 STATUS が`Twilio Approved`になります。
+あとは審査を待つだけです。作成された Bundle を早く確認してもらうためには、`numbers-regulatory-review@twilio.com`にメールを出すことをおすすめします。そのための文面が最後に表示されるので、そちらを使うとよいでしょう。
+
+審査が通れば上記 STATUS が`Twilio Approved`になります。

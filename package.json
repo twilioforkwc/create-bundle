@@ -2,7 +2,7 @@
   "name": "bundle-create",
   "version": "1.0.0",
   "description": "",
-  "main": "createBundle.js",
+  "main": "createBundle2.js",
   "directories": {
     "test": "test"
   },
@@ -14,12 +14,12 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.5",
-    "twilio": "*"
+    "request": "0.0.1",
+    "request-promise": "^0.0.1",
+    "twilio": "^4.11.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.2.2"
+    "mocha": "^10.2.0"
   }
 }

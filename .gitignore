@@ -58,13 +58,9 @@ typings/
 
 # dotenv environment variables file
 .env
-.env.GIJ
-.env.KWC
-.env.handson
+.env.*
+!.env.example
 
 # images
-images/KWC_*.jpg
-images/KWC_*.pdf
-images/GIJ_*.jpg
-images/GIJ_*.pdf
-
+images/*.jpg
+images/*.pdf
