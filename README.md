@@ -3,7 +3,7 @@
 このプログラムは、Twilio Japan に対して、Bundle の登録を自動化するものです。  
 マスターアカウントの AccountSid、AuthToken を設定していただければ、保有しているサブアカウント（マスターを含む）を自動的にクロールして、Bundles がないすべてのサブアカウントに登録します。  
 **[注意]**  
-すでに承認されている Bundles があるサブアカウントには登録をしません。
+すでに承認されている Bundle があるアカウントには登録をしません。レビュー中の Bundle がある場合は、新しい Bundle を作成します。
 
 ## 前提条件
 
@@ -18,7 +18,7 @@
 
 ## 準備
 
-- Bundle 申請書を**PDF 形式**で準備してください。リセラーとして申請する場合は、申請書の最後に TNUP をマージしておいてください。TNUP については、[こちらの記事](https://qiita.com/mobilebiz/items/c63e9ca4f102bc46cf25)を参考にしてください。
+- Bundle 申請書を**PDF 形式**で準備してください。リセラーとして申請する場合は、申請書の最後に TNUP をマージしてください。TNUP については、[こちらの記事](https://qiita.com/mobilebiz/items/c63e9ca4f102bc46cf25)を参考にしてください。
 - 謄本ならびに委任状（必要な場合のみ）を**PDF 形式**で準備してください（サイズは 5MB 以内）。謄本は発行日から 6 ヶ月以内のものに限ります。
 - 申請者の運転免許証のコピー、ならびにマイナンバーカード（表面のみ）のコピーを**JPEG 形式**で準備してください（サイズは 5MB 以内）。 スマホのカメラで撮影したものでも大丈夫ですが、免許証やマイナンバーカードのみが写るように周りの画像は削除してください。
 
@@ -33,7 +33,12 @@ npm install
 mv .env.example .env
 ```
 
-Bundle 申請書、謄本、委任状（必要な場合）、運転免許証、マイナンバーカードの各ファイルを、images フォルダにコピーしておきます。  
+## 書類の格納
+
+Bundle 申請書、謄本、委任状（必要な場合）、運転免許証、マイナンバーカードの各ファイルを、images フォルダにコピーしておきます。
+
+## 環境変数の準備
+
 `.env`ファイルをエディタで開き、以下の項目をすべて申請者の内容に置き換えます。
 
 | 項目名                   | 内容                                                                                                                   |
@@ -49,6 +54,8 @@ Bundle 申請書、謄本、委任状（必要な場合）、運転免許証、�
 | BUSINESS_REGION          | 登記簿謄本に記載されている都道府県名を記載されている通りに（例：東京都）                                               |
 | BUSINESS_POSTAL_CODE     | 会社の郵便番号をハイフンなしで（例：1000001）                                                                          |
 | BUSINESS_ISO_COUNTRY     | 会社の住所が日本の場合は JP のままで                                                                                   |
+| BUSINESS_FIRST_NAME      | 代表者の名前（名）を登記簿謄本に記載されている通りに（日本語 OK）                                                      |
+| BUSINESS_LAST_NAME       | 代表者の名前（姓）を登記簿謄本に記載されている通りに（日本語 OK）                                                      |
 | BUNDLE_APPLICATION_FILE  | Bundle 申請書の PDF ファイル（リセラーの場合は、最後に TNUP をマージすることを忘れずに）                               |
 | CORPORATE＿REGISTRY_FILE | 登記簿謄本の PDF ファイル名                                                                                            |
 | POWER_OF_ATTORNEY_FILE   | 委任状の PDF ファイル名（なしの場合は未指定）                                                                          |
@@ -72,21 +79,42 @@ npm start
 ...最初にテストコードが走って`.env`の内容をチェックします。
 ...テストがすべてPASSすると申請が始まります。
 
->>> AddressSid:ADaf7ab6216031b81e4ecce80aa3111a56 created.
->>> BundleSid:BUefb9be077dfbcca5310ecd8a431d7a09 created.
->>> UserSid:ITff4c56fed982f24322245263db52464a created.
->>> CorporateRegistrySid:RDe948ef6f563611e18c2390845d28cfd9 created.
->>> PowerOfAttorneySid:RDd5aabe1a69d6a7edcc8c1a976537d3ff created.
->>> DriverLicenseSid:RD0e0696679d5fdbb902cc02ff6bcf561c created.
->>> Corporate Registry Assign completed.
->>> Power of Attorney Assign completed.
->>> Driver's License Assign completed.
->>> End User Assign completed.
->>> Submitted.
+アカウント名 [AC6c061ba1b2b7a938ae2dbf64816fxxxx]==============
+BUba40a23d409b7cadf48dd835ca0120a4 => pending-review
+BU1728e396de39b604c0cfba77e5b18c29 => draft
+BUcabb988722cd47f1a3363a028c6b31be => draft
+🐞 Business Address created. AD1d83b176779275e81835594b8bb4f293
+🐞 User Address created. ADb5320e697d943cf6c5d1f16168b04452
+🐞 Bundle created. BU9672a4cd0b189ded690377f9d150acc1
+🐞 End-User created. IT6609096bc23621e3e7ac817803c85972
+🐞 Corporate Registry Document uploaded. RD926bd7b35834ad108e44dd39e616f8dd
+🐞 Bundle Application Document uploaded. RD20b3d59e71b997c27f55ad1315cf5163
+🐞 Power of Attorney Document uploaded. RD84ecae69831ccc2557db19b1862876b7
+🐞 Drivers License Document uploaded. RD9182f35576de463ab95c5e2038a58634
+🐞 MyNumber Card Document uploaded. RD2e20c8312e445d3da699ae60809651b4
+🐞 End-User assigned. BVa980a05ace23e03f64b47903790e14f6
+🐞 Corporate Registry Document assigned. BVbf0c3210a1d1f88f6e57c184ff17a6bc
+🐞 Bundle Application Document assigned. BVd4608ef7d4e18d24aa2e335adf93db4b
+🐞 Power Of Attorney Document assigned. BV220fcc049afa0aa013a6d657c47020e9
+🐞 Drivers License Document assigned. BV74fd0278894ed56f592de9b255bd1e1a
+🐞 MyNumber Card Document assigned. BV1b15af9293c1877efc9bb5fd1f8083aa
+🐞 Bundle requested. BU9672a4cd0b189ded690377f9d150acc1
+AccountSid: AC6c061ba1b2b7a938ae2dbf64816xxxx BundleSid: BU9672a4cd0b189ded690377f9d150acc1
+
+メールの宛先：numbers-regulatory-review@twilio.com
+件名：Please review Bundles.
+本文：
+Hello Twilio Regulatory Compliance Team,
+
+Please review the following Bundles.
+Best regards,
+
+
+BU9672a4cd0b189ded690377f9d150acc1
 ```
 
-上記のように`Submitted.`が表示されれば成功です。  
-管理コンソールにログインし、電話番号 > Regulatory Complience > Bundles を確認し、STATUS が`Pending Review`になっていることを確認しましょう。
-あとは審査を待つだけです。作成された Bundle を早く確認してもらうためには、`numbers-regulatory-review@twilio.com`にメールを出すことをおすすめします。そのための文面が最後に表示されるので、そちらを使うとよいでしょう。
+上記のように表示されれば成功です。また、レビューを受け取った旨のメールが Twilio 届きます。  
+最後に表示されたのは、Bundle を早く確認してもらうためのメールの雛形になります。この文面で`numbers-regulatory@twilio.com`にメールを送信すれば、比較的早くレビューをしてくれます。
 
-審査が通れば上記 STATUS が`Twilio Approved`になります。
+審査が通れば STATUS が`Twilio Approved`になります。  
+すでに番号を保有している人は、審査済みの Bundle と既存の番号の紐づけをしておく必要があります。

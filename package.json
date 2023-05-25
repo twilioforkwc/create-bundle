@@ -2,20 +2,20 @@
   "name": "bundle-create",
   "version": "1.0.0",
   "description": "",
-  "main": "createBundle2.js",
+  "main": "createBundle.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
     "test": "node_modules/.bin/mocha --recursive",
-    "start": "npm test && node createBundle2.js"
+    "start": "npm test && node createBundle.js"
   },
   "author": "katsumi takahashi",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.4.0",
     "dotenv": "^8.2.0",
-    "request": "0.0.1",
-    "request-promise": "^0.0.1",
+    "form-data": "^4.0.0",
     "twilio": "^4.11.1"
   },
   "devDependencies": {
