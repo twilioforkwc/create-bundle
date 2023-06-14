@@ -128,20 +128,6 @@ describe(".env test", () => {
       "BUSINESS_ISO_COUNTRYの長さが不正です",
     );
   });
-  it("BUSINESS_FIRST_NAME", () => {
-    assert.notEqual(
-      process.env.BUSINESS_FIRST_NAME.length,
-      0,
-      "BUSINESS_FIRST_NAMEが空です",
-    );
-  });
-  it("BUSINESS_LAST_NAME", () => {
-    assert.notEqual(
-      process.env.BUSINESS_LAST_NAME.length,
-      0,
-      "BUSINESS_LAST_NAMEが空です",
-    );
-  });
   it("BUNDLE_APPLICATION_FILE", () => {
     assert.isTrue(
       fs.existsSync(`./images/${process.env.BUNDLE_APPLICATION_FILE}`),

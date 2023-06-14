@@ -14,8 +14,6 @@ const BUSINESS_CITY = process.env.BUSINESS_CITY;
 const BUSINESS_REGION = process.env.BUSINESS_REGION;
 const BUSINESS_POSTAL_CODE = process.env.BUSINESS_POSTAL_CODE;
 const BUSINESS_ISO_COUNTRY = process.env.BUSINESS_ISO_COUNTRY;
-const BUSINESS_FIRST_NAME = process.env.BUSINESS_FIRST_NAME;
-const BUSINESS_LAST_NAME = process.env.BUSINESS_LAST_NAME;
 const BUNDLE_APPLICATION_FILE = process.env.BUNDLE_APPLICATION_FILE;
 const CORPORATE_REGISTRY_FILE = process.env.CORPORATE_REGISTRY_FILE;
 const POWER_OF_ATTORNEY_FILE = process.env.POWER_OF_ATTORNEY_FILE || "";
@@ -201,8 +199,8 @@ const addBundles = async (twilioClient, account) => {
     formData.append(
       "Attributes",
       JSON.stringify({
-        first_name: BUSINESS_FIRST_NAME,
-        last_name: BUSINESS_LAST_NAME,
+        first_name: FIRST_NAME,
+        last_name: LAST_NAME,
         business_name: BUSINESS_NAME,
       }),
     );

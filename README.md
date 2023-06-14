@@ -55,8 +55,6 @@ Bundle 申請書、謄本、委任状（必要な場合）、運転免許証、�
 | BUSINESS_REGION          | 登記簿謄本に記載されている都道府県名を記載されている通りに（例：東京都）                                               |
 | BUSINESS_POSTAL_CODE     | 会社の郵便番号をハイフンなしで（例：1000001）                                                                          |
 | BUSINESS_ISO_COUNTRY     | 会社の住所が日本の場合は JP のままで                                                                                   |
-| BUSINESS_FIRST_NAME      | 代表者の名前（名）を登記簿謄本に記載されている通りに（日本語 OK）                                                      |
-| BUSINESS_LAST_NAME       | 代表者の名前（姓）を登記簿謄本に記載されている通りに（日本語 OK）                                                      |
 | BUNDLE_APPLICATION_FILE  | Bundle 申請書の PDF ファイル（リセラーの場合は、最後に TNUP をマージすることを忘れずに）                               |
 | CORPORATE＿REGISTRY_FILE | 登記簿謄本の PDF ファイル名                                                                                            |
 | POWER_OF_ATTORNEY_FILE   | 委任状の PDF ファイル名（なしの場合は未指定）                                                                          |
