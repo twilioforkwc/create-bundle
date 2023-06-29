@@ -71,9 +71,11 @@ const execSubAccount = async (account) => {
     .then(async (bundles) => {
       // すでにtwilio-approvedのBundleがある場合は処理しない
       let fNoBundles = true;
-      bundles.forEach((bundle) => {
+      bundles.forEach(async (bundle) => {
         console.log(`${bundle.sid} => ${bundle.status}`);
-        if (bundle.status === "twilio-approved" && bundle.validUntil === null)
+        // Regulation Resourceを検索
+        const requlationResource = await twilioClient.numbers.v2.regulatoryCompliance.regulations(bundle.regulationSid).fetch();
+        if (bundle.status === "twilio-approved" && bundle.validUntil === null && NUMBER_TYPE === requlationResource.numberType)
           fNoBundles = false;
       });
       if (fNoBundles) await addBundles(twilioClient, account);
